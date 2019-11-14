@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ */
+function custom_migration_uninstall() {
+  \Drupal::configFactory()->getEditable('migrate_plus.migration.d7_blog_listing')->delete();
+  \Drupal::configFactory()->getEditable('migrate_plus.migration.igroup')->delete();
+}

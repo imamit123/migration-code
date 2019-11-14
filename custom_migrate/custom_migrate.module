@@ -1,0 +1,48 @@
+<?php
+
+ /**
+  * @file
+  * Contains custom_migrate.module.
+  */
+use Drupal\migrate\Row;
+use Drupal\migrate\Plugin\MigrateSourceInterface;
+use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\file\Entity\File;
+
+/**
+  * Implements hook_migrate_prepare_row().
+  */
+ function custom_migrate_migrate_prepare_row(Row $row, MigrateSourceInterface $source, MigrationInterface $migration) {
+  if ($migration->id() == 'd7_blog_listing') {
+      
+      //Tags TAXONOMY -- Open
+      $tags_taxonomy = $source->getDatabase()->select('term_node', 'n');
+      $tags_taxonomy->fields('n', array('tid','nid'));
+      $tags_taxonomy->join('term_data', 'd', 'n.tid = d.tid');
+      $tags_taxonomy->condition('d.vid', '5');
+      $tags_taxonomy->condition('n.nid', $row->getSourceProperty('nid'));
+      $results_tags_taxonomy = $tags_taxonomy->execute()->fetchAllKeyed();
+      foreach ($results_tags_taxonomy as $key => $val) {
+        $d8_tags_new_taxonomy[$key]['target_id'] = $key;
+        $d8_tags_new_taxonomy[$key]['target_type'] = 'taxonomy_term';
+      }
+      $row->setSourceProperty('field_tags', $d8_tags_new_taxonomy);
+      //Tags TAXONOMY -- Close
+
+      //Technologies TAXONOMY -- Open
+      $technologies_taxonomy = $source->getDatabase()->select('term_node', 'n');
+      $technologies_taxonomy->fields('n', array('tid','nid'));
+      $technologies_taxonomy->join('term_data', 'd', 'n.tid = d.tid');
+      $technologies_taxonomy->condition('d.vid', '6');
+      $technologies_taxonomy->condition('n.nid', $row->getSourceProperty('nid'));
+      $results_technologies_taxonomy = $taxonomy->execute()->fetchAllKeyed();
+      foreach ($results_taxonomy as $key => $val) {
+        $d8_technologies_new_taxonomy[$key]['target_id'] = $key;
+        $d8_technologies_new_taxonomy[$key]['target_type'] = 'taxonomy_term';
+      }
+      $row->setSourceProperty('field_technologies', $d8_technologies_new_taxonomy);
+      //Technologies TAXONOMY -- Close
+      
+    }
+ }
+
